@@ -1,5 +1,5 @@
 blueprint:
-  name: "AWTRIX Bitcoin2"
+  name: "AWTRIX Bitcoin"
   description: "This blueprint will show the status of the exchange rate for the bitcoin in USD, along with the number of Satoshis per 1 USD."
   source_url: https://github.com/RDG88/Homeassistant_Blueprints/blob/main/bitcoin_awtrix_app.yaml
   domain: automation
@@ -88,7 +88,7 @@ trigger:
     entity_id:
       - !input bitcoin_sensor
   - platform: time_pattern
-    seconds: /59
+    seconds: "/59"
 condition:
   - condition: not
     conditions:
@@ -101,7 +101,7 @@ action:
       topic: "{{ message_topic }}"
       payload: |-
         {   
-          "text": "Bitcoin Price: {{ states(sensor_bitcoin) | round(2) }} USD\nSatoshis per 1 USD: {{ (100000000 / states(sensor_bitcoin) | float) | round(0) }}",
+          "text": "Bitcoin Price: {{ states(sensor_bitcoin) | round(2) }} USD\nSatoshis per 1 USD: {{ (100000000 / states(sensor_bitcoin) | float ) | round(0) }}",
           "color": {{ txt_color_bitcoin }},
           "icon": "{{ icon }}",
           "pushIcon": {{ push_icon }},
@@ -110,4 +110,3 @@ action:
         }
 
 mode: restart
-
