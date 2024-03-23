@@ -14,7 +14,7 @@ blueprint:
           model: AWTRIX 3
           multiple: false
     awtrix_app_name:
-      name: AWTRIX Application name
+      name: Moskauzeit
       description: This is the custom app name that will be added to AWTRIX, should be unique
       selector:
         text: {}
