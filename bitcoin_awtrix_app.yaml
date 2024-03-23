@@ -1,6 +1,6 @@
 blueprint:
   name: "AWTRIX Bitcoin2"
-  description: "This blueprint will show the status of the exchange rate for the bitcoin in USD, along with the number of Satoshis per 1 USD."
+  description: "This blueprint will show the number of Satoshis per 1 USD based on the Bitcoin exchange rate."
   source_url: https://github.com/RDG88/Homeassistant_Blueprints/blob/main/bitcoin_awtrix_app.yaml
   domain: automation
   input:
@@ -25,7 +25,8 @@ blueprint:
       selector:
         entity:
           multiple: false
-          domain: sensor
+          filter:
+            - integration: bitcoin
     bitcoin_icon:
       name: Icon
       description: Enter the Icon Name or ID of the icon that you like to show.
@@ -34,11 +35,7 @@ blueprint:
       default: "12460"
     push_icon:
       name: pushIcon
-      description:
-        "Please select the pushIcon setting for the icon\n\n  - `0`  Icon
-        doesn't move\n\n  - `1`  Icon moves with text and will not appear again\n\n
-        \ - `2` Icon moves with text but appears again when the text starts to scroll
-        again\n"
+      description: "Please select the pushIcon setting for the icon"
       selector:
         select:
           options:
@@ -66,15 +63,14 @@ blueprint:
       default: "4"
     lifetime:
       name: Lifetime of the app (in seconds)
-      description: Removes the custom app when there is no update after the given time in seconds. Keep this value higher than 59 seconds to get the AWTRIX app automatically deleted when disabling the automation.
+      description: Removes the custom app when there is no update after the given time in seconds.
       default: "70"
-
 
 variables:
   device_id: !input awtrix
   awtrix: "{{ iif( device_attr(device_id, 'name_by_user') != none, device_attr(device_id,'name_by_user'), device_attr(device_id, 'name') ) }}"
   app: !input awtrix_app_name
-  message_topic: "{{awtrix ~ '/custom/' ~ app }}"
+  message_topic: "{{ awtrix ~ '/custom/' ~ app }}"
   icon: !input bitcoin_icon
   txt_color_bitcoin: !input txt_color_bitcoin
   sensor_bitcoin: !input bitcoin_sensor
@@ -85,8 +81,7 @@ variables:
 
 trigger:
   - platform: state
-    entity_id:
-      - !input bitcoin_sensor
+    entity_id: !input bitcoin_sensor
   - platform: time_pattern
     seconds: "/59"
 condition:
@@ -95,13 +90,14 @@ condition:
       - condition: state
         entity_id: !input bitcoin_sensor
         state: unavailable
+
 action:
   - service: mqtt.publish
     data:
       topic: "{{ message_topic }}"
       payload: |-
         {   
-          "text": "Bitcoin Price: {{ states(sensor_bitcoin) | round(2) }} USD\nSatoshis per 1 USD: {{ (100000000 / states(sensor_bitcoin) | float ) | round(0) }}",
+          "text": "{{ (100000000 / states(sensor_bitcoin) | float ) | round(0) }}",
           "color": {{ txt_color_bitcoin }},
           "icon": "{{ icon }}",
           "pushIcon": {{ push_icon }},
