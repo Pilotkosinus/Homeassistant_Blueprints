@@ -97,7 +97,7 @@ action:
       topic: "{{ message_topic }}"
       payload: |-
         {   
-          "text": "{{ (100000000 / states(sensor_bitcoin) | float ) | round(0) }}",
+          "text": "{{ ((100000000 / states(sensor_bitcoin) | float ) | round(0)) | string | regex_replace('(\\d)(\\d{2})$', '\\1:\\2') }}",
           "color": {{ txt_color_bitcoin }},
           "icon": "{{ icon }}",
           "pushIcon": {{ push_icon }},
