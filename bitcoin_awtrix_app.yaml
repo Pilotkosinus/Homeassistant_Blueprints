@@ -1,5 +1,5 @@
 blueprint:
-  name: "AWTRIX Bitcoin"
+  name: "AWTRIX Bitcoin2"
   description: "This blueprint will show the status of the exchange rate for the bitcoin in USD, along with the number of Satoshis per 1 USD."
   source_url: https://github.com/RDG88/Homeassistant_Blueprints/blob/main/bitcoin_awtrix_app.yaml
   domain: automation
